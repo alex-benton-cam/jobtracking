@@ -1,0 +1,38 @@
+loc_id,name,many_jobs
+Release,Release,True
+Program,PROGRAM,True
+Tooling,TOOLING,True
+MT1,MT1,False
+T1,"T1 (Turn/Mill Bar Feed, Chuck)",False
+T2,T2 (Turn/Mill Chuck),False
+T3,T3,False
+T4,T4,False
+T5,T5,False
+T6,T6,False
+T7,T7 (Turn/Mill Bar Feed Collet),False
+T9,T9,False
+G1,G1,False
+G2,G2,False
+G3,G3,False
+MAT1,MAT1,False
+I1,I1 - i200,False
+I2,I2 - i400,False
+M1,M1 (5 AXIS),False
+M2,M2 (4 AXIS),False
+M3,M3 (4 AXIS),False
+M4,M4 (5 AXIS),False
+M5,M5 (4 AXIS),False
+M6,M6 (4 AXIS),False
+M7,M7 (4 AXIS),False
+M8,M8 (4 AXIS),False
+M9,M9 (3 AXIS),False
+M10,M10 (3 AXIS),False
+M11,M11 (4AXIS),False
+M12,M12 (MANUAL),False
+Assy. 1,DeBurr-Assy 1,True
+Assy. 2,DeBurr-Assy 2,True
+Insp. 1,Insp - 1,True
+Insp. 2,Insp - 2,True
+Insp. GI,Insp - Goods In,True
+Sub-Con,Sub - Con,True
+Packing,Packing,True

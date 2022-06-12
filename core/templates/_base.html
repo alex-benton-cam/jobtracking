@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% set STATIC = "/static/" %}
+	    <!-- Title and favicon-->
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="{{STATIC}}assets/favicon.ico">
+    
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Bootstrap CSS v5.0.2 -->
+    <link rel="stylesheet" href="{{STATIC}}css/bootstrap.css">
+    <link rel="stylesheet" href="{{STATIC}}icons/bootstrap-icons.css">
+
+    {% block css %}{%endblock%}
+
+  </head>
+
+  
+
+  <body class="d-flex flex-column min-vh-100">
+    {% block macros %}{% endblock %}
+    {% block body %}
+    {% endblock %}
+
+    <script src="{{STATIC}}js/bootstrap.bundle.min.js"></script>
+
+    <script type="text/javascript" src="{{STATIC}}js/wslib.js"> </script>
+    
+
+    {% block scripts %}
+    {% endblock %}
+  
+  </body>
+
+</html>

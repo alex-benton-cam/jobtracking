@@ -1,0 +1,67 @@
+{% extends "_index.html" %}
+{% block content %}
+  <div class="container-fluid">
+    <h3 class="mb-3">Manage Supporting Data</h3>
+    <div class="row gy-3">
+      {% for modelDict in context %}
+        <div class="col-lg-6">
+          <div class="card">
+              
+            <div class="card-header"><strong>Upload {{modelDict.friendly}}s</strong></div>
+            <div class="card-body">
+              <div class="container-fluid px-1">
+                  <div class="row mb-2">
+                      <div class="col-12">Existing {{modelDict.friendly}}s: {{modelDict.count}}</div></div>
+                <div class="row mb-3">
+                  <form method="post" enctype="multipart/form-data" class="col-12">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <div class="input-group my-2">
+                      <input type="file"
+                             name="csv_file"
+                             id="csv_file"
+                             required="True"
+                             class="form-control">
+                      <button class="btn btn-primary"
+                              type="submit"
+                              id="button-addon1"
+                              name="upload"
+                              value="{{modelDict.name}}">
+                        <i class="bi-upload"></i>
+                        <span>&nbspUpload</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                    <form method="post" enctype="multipart/form-data" class="col-5">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                        <input type="hidden" name="filepath" value="{{  modelDict.example_fp }}">
+                        <button class="btn btn-light btn-outline-dark col-12"
+                                type="submit"
+                                id="button-addon1"
+                                name="example"
+                                value="{{modelDict.name}}">
+                          <i class="bi-download"></i>
+                          <span>&nbspExample file</span>
+                        </button>
+                      </form>
+                  <form method="post" enctype="multipart/form-data" class="col-7">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <button class="btn btn-light btn-outline-dark col-12"
+                            type="submit"
+                            id="button-addon1"
+                            name="download"
+                            value="{{modelDict.name}}">
+                      <i class="bi-download"></i>
+                      <span>&nbspExisting {{modelDict.lower}} data</span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

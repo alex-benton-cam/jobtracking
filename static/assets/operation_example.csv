@@ -1,0 +1,9 @@
+work_no,worker,location,issue_no,op_no,part_no,company,job_name,name,quantity,drg_no,start_time,planned_set,planned_run,end_time,insp_bool
+W/10000,,Release,A,5,907,Exemplar Manufacturing,Demonstration Job,Release - Always First Operation,200,,08/06/2022 08:00,0,0,08/06/2022 08:30,FALSE
+W/10000,Alex Benton,M1,A,10,533,Exemplar Manufacturing,Demonstration Job,A Simple Operation - No Inspection Required,200,,08/06/2022 11:00,30,120,08/06/2022 14:00,FALSE
+W/10000,Tim Minshall,T4,A,20,1554,Exemplar Manufacturing,Demonstration Job,A Turning Operation - Interim Inspection Required,200,,09/06/2022 10:00,60,240,09/06/2022 17:00,TRUE
+W/10000,Another Operator,T5,A,30,376,Exemplar Manufacturing,Demonstration Job,A Turning Operation at a different machine,200,,09/06/2022 18:00,0,60,09/06/2022 19:00,FALSE
+W/10000,Another Operator,M1,A,35,325,Exemplar Manufacturing,Demonstration Job,An operation at an un-tracked machine,200,,10/09/2022 09:00,0,30,09/06/2022 10:00,FALSE
+W/10000,Another Operator,MAT1,A,40,734,Exemplar Manufacturing,Demonstration Job,An operation at an un-tracked machine,200,,09/06/2022 10:00,0,30,09/06/2022 11:00,FALSE
+W/10000,Another Operator,TOOLING,A,50,21,Exemplar Manufacturing,Demonstration Job,An operation at an un-tracked machine,200,,09/06/2022 11:00,0,30,09/06/2022 12:00,FALSE
+W/10000,Greg Hawkridge,Packing,A,60,999,Exemplar Manufacturing,Demonstration Job,Packing - Final Operation of Job,200,,10/09/2022 12:00,0,180,10/09/2022 15:00,FALSE

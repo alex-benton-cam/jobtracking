@@ -1,0 +1,67 @@
+{% extends "_index.html" %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="row mb-3">
+      <h3>Location Dashboard - {{ locName }}</h3>
+    </div>
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="container-fluid px-0">
+          <form method="post" class="row">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <div class="input-group">
+              <button type="submit" name="check_in_button" class="btn btn-primary">Check in to Operation</button>
+              <input id="work_order_field"
+                     name="operation_id"
+                     placeholder="Op ID or Work Number"
+                     type="text"
+                     autocomplete="off"
+                     value=""
+                     class="form-control font-weight-bold bg-light"
+                     autofocus>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3 gy-3">
+      <div class="col-12 d-flex align-items-stretch" >
+        {% if actData %}
+          {% set pendOpt = "none" %}
+          <div class="card col-12">
+            <div class="card-header">Active Operations</div>
+            <div class="card-body">{{ datatable(actFieldDict, actData, tableid="actTable", option="select")}}</div>
+          </div>
+        {% else %}
+          {% set pendOpt = "select" %}
+          <div class="card col-12">
+            <div class="card-header">Active Operations</div>
+            <div class="card-body">No jobs active at {{ locName }}</div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col-12 d-flex align-items-stretch">
+        <div class="card col-12">
+          <div class="card-header">Pending Ops</div>
+          <div class="card-body">{{ datatable(pendFieldDict, pendData, option=pendOpt, tableid="pendTable")}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-12">
+        {% if compData %}
+          <div class="card">
+            <div class="card-header">Completed Ops</div>
+            <div class="card-body">{{ datatable(compFieldDict, compData, tableid="compTable")}}</div>
+          </div>
+        {% else %}
+          <div class="card">
+            <div class="card-header">Completed Jobs</div>
+            <div class="card-body">No jobs completed at {{ locName }}</div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

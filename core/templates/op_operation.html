@@ -1,0 +1,237 @@
+{% extends "_index.html" %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-7 col-12 mb-3 d-flex align-items-stretch">
+        <div class="row gy-4">
+          <div class="col-12 d-flex align-items-stretch">
+            <div class="card" style="width: 100%;">
+              <div class="card-header">
+                <h5 class=mb-1>
+                  Operation <strong>{{ op_id }}</strong> at <strong>{{ loc_name }}</strong>
+                </h5>
+              </div>
+              <div class="card-body">
+                <table class="table table-sm table-borderless my-0">
+                  <tr>
+                    <td>Operation Title</td>
+                    <td>{{ op_name }}</td>
+                  </tr>
+                  <tr>
+                    <td>Current Status</td>
+                    <td>{{ op_status }}</td>
+                  </tr>
+                  {% if phase %}
+                    <tr>
+                      <td>Current Phase</td>
+                      <td>{{ phase }}</td>
+                    </tr>
+                    <tr>
+                      <td>Next Phase</td>
+                      <td>{{ next_phase }}</td>
+                    </tr>
+                  {% endif %}
+                </table>
+              </div>
+            </div>
+          </div>
+          {% if not manager %}
+            <form method="post" class="col-md-4 d-flex align-items-stretch">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <input type="hidden" name="op_id" value={{ op_id }}>
+              <input type="hidden" name="loc_id" value={{ loc_id }}>
+              <button type="submit"
+                      name="advance_to_next_button"
+                      class="btn btn-success col-12 btn-lg">{{ button_text }}</button>
+              <!-- Make this a complete job with different button name if req-->
+            </form>
+            <!--form method="post" class="col-4 d-flex align-items-stretch">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <input type="hidden" name="op_id" value={{ op_id }}>
+              <input type="hidden" name="loc_id" value={{ loc_id }}>
+              <button type="submit" name="undo_last_button" class="btn btn-secondary col-12">Undo Last</button>
+            </form-->
+            <div class="col-md-4 d-flex align-items-stretch">
+              <button type="button"
+                      class="btn btn-warning col-12 btn-lg"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal">
+                Report Scrap
+              </button>
+            </div>
+            <form method="post" class="col-md-4 d-flex align-items-stretch">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <input type="hidden" name="op_id" value={{ op_id }}>
+              <input type="hidden" name="loc_id" value={{ loc_id }}>
+              <button type="submit"
+                      name="call_manager_button"
+                      class="btn btn-danger col-12 btn-lg">Call Manager</button>
+            </form>
+            <!--div class="col-md-4 d-flex align-items-stretch">
+              <button onclick="wsm.send('call_manager_button','{{ loc_id }}')" name="call_manager_button" class="btn btn-danger col-12 btn-lg">
+                Call Manager
+              </button>
+            </div-->
+          {% endif %}
+          {% if manager and user is defined %}
+            <!--div class="col-md-12 d-flex align-items-stretch">
+              <button type="button" class="btn btn-warning col-12" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Report Scrap
+              </button>
+            </div>
+            <div class="col-md-6 d-flex align-items-stretch">
+              <button type="button" class="btn btn-info col-12 btn-lg" onclick="wsm.send('cancel_call_manager','{{ loc_id }}')">
+                Cancel Call Manager
+              </button>
+            </div>
+
+            <form method="post" class="col-md-6 d-flex align-items-stretch">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <input type="hidden" name="op_id" value={{ op_id }}>
+              <input type="hidden" name="loc_id" value={{ loc_id }}>
+              <button type="submit" name="call_manager_button" class="btn btn-danger col-12 btn-lg">Call Manager</button>
+            </form-->
+          {% endif %}
+          <div class="col-12">
+            <div class="card" style="width: 100%;">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Job Log</span>
+
+                  {% if manager and user is defined %}
+                    <div class="col-md-4 d-flex align-items-stretch">
+                      <button type="button"
+                              class="btn btn-warning col-12"
+                              data-bs-toggle="modal"
+                              data-bs-target="#exampleModal">
+                        Report Scrap
+                      </button>
+                    </div>
+                  {% endif %}
+
+              </div>
+              <div class="card-body" style="overflow-y: auto; max-height: 50vh">{{ add_joblog(jobLog)}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 col-12 mb-3 d-flex align-items-stretch">
+        <div class="card" style="width: 100%;">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs d-flex" data-bs-tabs="tabs">
+              <li class="nav-item">
+                <a class="nav-link disabled">Information</a>
+              </li>
+              <li class="nav-item ml-auto">
+                <a class="nav-link active"
+                   aria-current="true"
+                   data-bs-toggle="tab"
+                   href="#general">General</a>
+              </li>
+              <li class="nav-item ml-auto">
+                <a class="nav-link" data-bs-toggle="tab" href="#timing">Timing</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body tab-content">
+            <div class="tab-pane active" id="general">{{ singletable(fieldDict1, opData1)}}</div>
+            <div class="tab-pane" id="timing">{{ singletable(fieldDict2, opData2)}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block modals %}
+  <!-- Modal -->
+  <div class="modal fade"
+       id="exampleModal"
+       tabindex="-1"
+       aria-labelledby="exampleModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form method="post" class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Report Scrap
+          </h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close">
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+          <input type="hidden" name="scrapDesc" id="scrapDescInput" value=None>
+          <div class="container-fluid ">
+            <div class="row gy-3 mb-3 justify-content-center">
+              <label class="col-12">
+                Pick Scrap Code
+              </label>
+              {% for code, desc in scrapCodes.items() %}
+                <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                  <input type="radio"
+                         name="scrapCode"
+                         class="btn-check"
+                         value="{{ code }}"
+                         id="{{ code }}"
+                         autocomplete="off"
+                         required>
+                  <label class="btn btn-outline-primary col-12"
+                         onclick="updateDesc('{{ code }} - {{ desc }}')"
+                         for="{{ code }}">
+                    {{ code }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="row mb-3">
+              <label for="staticEmail" class="col-sm-3 col-form-label">
+                Description
+              </label>
+              <div class="col-sm-9">
+                <input type="text"
+                       readonly
+                       class="form-control-plaintext"
+                       id="scrapDesc"
+                       value="">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3" for="scrapQty">
+                Quantity
+              </label>
+              <div class="col-sm-9">
+                <input type="number"
+                       name="quantity"
+                       class="form-control"
+                       id="scrapQty"
+                       value
+                       1>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <input type="hidden" name="op_id" value={{ op_id }}>
+          <input type="hidden" name="loc_id" value={{ loc_id }}>
+          <button type="submit" name="report_scrap_button" class="btn btn-primary">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  <script>
+  function updateDesc(desc) {
+      
+    var descField = document.getElementById("scrapDesc");
+    descField.value = desc;
+    document.getElementById("scrapDescInput").value=desc;
+  }
+
+  </script>
+{% endblock %}

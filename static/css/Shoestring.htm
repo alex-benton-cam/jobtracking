@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+	    <!-- Title and favicon-->
+    <title>Shoestring</title>
+    <link rel="shortcut icon" href="http://192.168.0.113:8000/static/assets/favicon.ico">
+    
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Bootstrap CSS v5.0.2 -->
+    <link rel="stylesheet" href="Shoestring_files/bootstrap.css">
+    <link rel="stylesheet" href="Shoestring_files/bootstrap-icons.css">
+
+    
+  <link rel="stylesheet" href="Shoestring_files/dashboard.css">
+  <link rel="stylesheet" href="Shoestring_files/datatables.css">
+
+
+  </head>
+
+  
+
+  <body class="d-flex flex-column min-vh-100 modal-open" style="overflow: hidden; padding-right: 13px;" cz-shortcut-listen="true">
+    
+    
+  <!-- Navbar (Top of page) -->
+  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Shoestring Job Tracking</a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">
+        <a class="nav-link px-3" href="#">Sign out</a>
+      </div>
+    </div>
+  </header>
+  <!-- Sidebar -->
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <ul class="nav flex-column mb-auto">
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/upload">
+      <i class="bi-file-arrow-up"></i>
+      <span>&nbsp;Upload Ops</span>
+    </a>
+  </li>
+
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/mgsetup">
+      <i class="bi-cloud"></i>
+      <span>&nbsp;Setup Data</span>
+    </a>
+  </li>
+
+          <hr>
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/jobs">
+      <i class="bi-briefcase"></i>
+      <span>&nbsp;Jobs</span>
+    </a>
+  </li>
+
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/operations">
+      <i class="bi-clipboard-check"></i>
+      <span>&nbsp;Operations</span>
+    </a>
+  </li>
+
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/locations">
+      <i class="bi-pin-angle"></i>
+      <span>&nbsp;Locations</span>
+    </a>
+  </li>
+
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/workers">
+      <i class="bi-person-badge"></i>
+      <span>&nbsp;Workers</span>
+    </a>
+  </li>
+
+          <hr>
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/factory">
+      <i class="bi-building"></i>
+      <span>&nbsp;Factory Floor</span>
+    </a>
+  </li>
+
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/machine">
+      <i class="bi-motherboard"></i>
+      <span>&nbsp;Machine Dash</span>
+    </a>
+  </li>
+
+          
+  <li class="nav-item active">
+    <a class="nav-link" href="http://192.168.0.113:8000/operation">
+      <i class="bi-card-checklist"></i>
+      <span>&nbsp;Operation</span>
+    </a>
+  </li>
+
+          <ul class="nav flex-column mt-auto position-absolute bottom-0">
+            <!--
+              <li class="nav-item active">
+                <a class="nav-link" href="/operation/">
+                  <i class="bi-card-text"></i>
+                  <span id="machine_footer_name">&nbspW/10759/A20</span>
+                </a>
+              </li>
+            -->
+            
+              <li class="nav-item active">
+                <a class="nav-link" href="http://192.168.0.113:8000/machine/">
+                  <i class="bi-pin-angle"></i>
+                  <span id="machine_footer_name">&nbsp;G2</span>
+                </a>
+              </li>
+            
+            <li class="nav-item active">
+              <a id="live_status" class="nav-link" href="#"><i class="bi-wifi text-success"></i>&nbsp;<span class="text-success">Connected</span></a>
+            </li>
+          </ul>
+        </ul></nav></div>
+      
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 pt-3">
+        
+          
+            
+            <div class="modal fade show" id="modal_confirm" aria-labelledby="modalLabel2" style="display: block;" aria-modal="true" role="dialog">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel2">Advance Operation to Next Phase</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                  Confirm phase 'Pending' of operation W/10759/A20 is complete and advance to Setup
+                  
+                  
+                  </div>
+                  <form method="post" class="modal-footer">
+                    <button type="button" class="btn btn-error" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <input type="hidden" name="csrfmiddlewaretoken" value="93gSFzlqcs33hXZvpt809oKJ8h0boT0IuAyG0fkYnkW2JUoeN2xlBtU0OVMDeqvI">
+                    <button type="submit" name="advance_modal" class="btn btn-primary">Advance to Setup</button>
+                    <input type="hidden" name="modal_data" value="{&quot;next_phase&quot;: &quot;Setup&quot;, &quot;curr_phase&quot;: &quot;Pending&quot;, &quot;op_id&quot;: &quot;W/10759/A20&quot;}">
+                  </form>
+                </div>
+              </div>
+            </div>
+          
+        
+        
+  <!-- Modal -->
+
+  
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form method="post" class="modal-content">
+
+        <div class="modal-header bg-light">
+          <h5 class="modal-title" id="exampleModalLabel">Report Scrap</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <input type="hidden" name="csrfmiddlewaretoken" value="kSHdUOprgppHg1WXByNWkk3lgEZRr1hYFpZ1fuoZrhiGIYlGZ7chMpdCWiLjhyMY">
+          <input type="hidden" name="scrapDesc" id="scrapDescInput" value="None">
+          <div class="container-fluid ">
+            <div class="row gy-3 mb-3 justify-content-center">
+              <label class="col-12">Pick Scrap Code</label> 
+
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-001" id="SC-001" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-001 - Drawing Error')" for="SC-001">SC-001</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-002" id="SC-002" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-002 - Operator Error')" for="SC-002">SC-002</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-003" id="SC-003" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-003 - Material Defects')" for="SC-003">SC-003</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-004" id="SC-004" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-004 - Training Error')" for="SC-004">SC-004</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-005" id="SC-005" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-005 - Insufficient Material')" for="SC-005">SC-005</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-006" id="SC-006" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-006 - Sub-Con Error')" for="SC-006">SC-006</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-007" id="SC-007" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-007 - Used for Setter')" for="SC-007">SC-007</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-008" id="SC-008" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-008 - Machine Error')" for="SC-008">SC-008</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-009" id="SC-009" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-009 - Customer has Paid')" for="SC-009">SC-009</label>
+              </div>
+            
+              <div class="col-lg-3 col-md-4 col-sm-6 px-2">
+                <input type="radio" name="scrapCode" class="btn-check" value="SC-010" id="SC-010" autocomplete="off" required="">
+                <label class="btn btn-outline-primary col-12" onclick="updateDesc('SC-010 - Supplier has Paid')" for="SC-010">SC-010</label>
+              </div>
+            
+            </div>
+
+            <div class="row mb-3">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Description</label>
+              <div class="col-sm-9">
+                <input type="text" readonly="readonly" class="form-control-plaintext" id="scrapDesc">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3" for="scrapQty">Quantity</label>   
+              <div class="col-sm-9">
+              <input type="number" name="quantity" class="form-control" id="scrapQty" value="1">
+               </div>
+            </div>
+           </div>
+
+        </div>
+        <div class="modal-footer bg-light">
+          <input type="hidden" name="op_id" value="W/10759/A20">
+          <input type="hidden" name="loc_id" value="G2">
+          <button type="submit" name="report_scrap_button" class="btn btn-primary">Submit</button>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+        
+        
+          
+          
+        
+        
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-7 col-12 mb-3 d-flex align-items-stretch">
+
+        <div class="row gy-4">
+          <div class="col-12 d-flex align-items-stretch">
+            <div class="card" style="width: 100%;">
+              <div class="card-header">
+                <h5 class="mb-1">Operation <strong>W/10759/A20</strong> at <strong>G2</strong></h5>
+              </div>
+              <div class="card-body">
+                Current Operation - ~curr_op~
+                <br>
+                Current Status - ~curr_status~
+                </div>
+            </div>
+          </div>
+          <form method="post" class="col-8 d-flex align-items-stretch">
+            <input type="hidden" name="csrfmiddlewaretoken" value="toUSILOXLU9alAkFnWM9uEWDAH0CxnWnOVcG3rNvWM29NxJoLvbuWJ6UglM4nUrn">
+            <input type="hidden" name="op_id" value="W/10759/A20">
+            <input type="hidden" name="loc_id" value="G2">
+            <button type="submit" name="advance_to_next_button" class="btn btn-success col-12">Advance to Next</button>
+          </form>
+          <form method="post" class="col-4 d-flex align-items-stretch">
+            <input type="hidden" name="csrfmiddlewaretoken" value="e3A52Jh5A2pPVoCKGzGPK5GRijtWWUgVzASTnpgDLUiOnl1t485acaQ8YXfoMrLV">
+            <input type="hidden" name="op_id" value="W/10759/A20">
+            <input type="hidden" name="loc_id" value="G2">
+            <button type="submit" name="undo_last_button" class="btn btn-secondary col-12">Undo Last</button>
+          </form>
+          <form method="post" class="col-6 d-flex align-items-stretch">
+            <input type="hidden" name="csrfmiddlewaretoken" value="MJGrTavVq7NLaXSTd6TAE5bNX4MLD79k7gYfeQutBZGKCUhCBFiV6al4DIydtEEk">
+            <input type="hidden" name="op_id" value="W/10759/A20">
+            <input type="hidden" name="loc_id" value="G2">
+            <button type="submit" name="call_manager_button" class="btn btn-danger col-12">Call Manager</button>
+          </form>
+          <div class="col-6 d-flex align-items-stretch">
+            <button type="button" class="btn btn-warning col-12" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Report Scrap
+            </button>
+          </div>
+          <div class="col-12">
+            <div class="card" style="width: 100%;">
+              <div class="card-header">Job Log</div>
+              <div class="card-body" style="overflow-y: auto; max-height: 50vh">
+                
+  <table class="table table-sm table-hover">
+    
+      <tbody><tr>
+        <td>2022-05-26 17:39:23</td><td>Checked in at G2.</td><td>W/10759/A20</td>
+      </tr>
+    
+      <tr>
+        <td>2022-05-26 17:39:23</td><td>Operation skipped</td><td>W/10759/A15</td>
+      </tr>
+    
+      <tr>
+        <td>2022-05-26 17:39:23</td><td>Operation skipped</td><td>W/10759/A05</td>
+      </tr>
+    
+      <tr>
+        <td>2022-05-26 17:39:23</td><td>Operation completed</td><td>W/10759/A00</td>
+      </tr>
+    
+      <tr>
+        <td>2022-05-26 17:39:11</td><td>Checked in at Unreleased.</td><td>W/10759/A00</td>
+      </tr>
+    
+      <tr>
+        <td>2022-05-26 17:39:11</td><td>Job uploaded to Shoestring Job Tracking</td><td>-</td>
+      </tr>
+    
+  </tbody></table>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5 col-12 mb-3 d-flex align-items-stretch">
+        <div class="card" style="width: 100%;">
+          <div class="card-header">Operation Information</div>
+          <div class="card-body">
+            
+  <table class="table table-striped">
+    
+      <tbody><tr>
+        <td>Job</td>
+        <td>
+  
+    <a href="http://192.168.0.113:8000/job/w10759">W/10759</a>
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Job Name</td>
+        <td>
+  
+    pin
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Company</td>
+        <td>
+  
+    Maleo Manufacturing
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Phase</td>
+        <td>
+  
+    Pending
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Inspection T/F</td>
+        <td>
+  
+    True
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Part No.</td>
+        <td>
+  
+    1554
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Qty.</td>
+        <td>
+  
+    194
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Drg No.</td>
+        <td>
+  
+    353.309.117
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Location</td>
+        <td>
+  
+    <a href="http://192.168.0.113:8000/location/g2">G2</a>
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Start Time</td>
+        <td>
+  
+    2022-10-09 01:29:00+00:00
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Planned Finish</td>
+        <td>
+  
+    2022-10-09 14:29:31+00:00
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Planned Set Mins</td>
+        <td>
+  
+    39.0
+  
+</td>
+      </tr>
+    
+      <tr>
+        <td>Planned Run Mins</td>
+        <td>
+  
+    64.0
+  
+</td>
+      </tr>
+    
+  </tbody></table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      </main>
+    </div>
+  
+  <footer class="mt-auto">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3 col-lg-2 d-md-block">Placeholder</div>
+        <div class="col-md-9 col-lg-10 text-center">
+          <a class="text-decoration-none link-secondary" href="https://www.ifm.eng.cam.ac.uk/research/dial/research-projects/digital-manufacturing-on-a-shoestring/">
+            <h6>Copyright © Shoestring 2022</h6>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+    <script src="Shoestring_files/bootstrap.js"></script>
+
+    <script type="text/javascript" src="Shoestring_files/wslib.js"> </script>
+    
+    <script>
+      var wsc = new wsClient();
+    </script>
+
+    
+
+  <script src="Shoestring_files/dashboard.js"></script>
+  <script>
+    var myModal = new bootstrap.Modal(document.getElementById("modal_confirm"), {});
+    document.onreadystatechange = function () {
+      myModal.show();
+    };
+  </script>
+  <script>
+  function getCookie(cookieName) {
+    let cookie = {};
+    document.cookie.split(';').forEach(function(el) {
+      let [key,value] = el.split('=');
+      cookie[key.trim()] = value;
+    })
+    return cookie[cookieName];
+  }
+  function status_connect(){
+    var status = document.getElementById("live_status");
+    status.innerHTML = '<i class="bi-wifi text-success"></i>&nbsp<span class="text-success">Connected</span>';
+  }
+  
+  function status_disconnect(){
+    var status = document.getElementById("live_status");
+    status.innerHTML = '<i class="bi-wifi-off text-danger"></i>&nbsp<span class="text-danger">Disconnected</span>';
+  }
+
+  wsc.connect("ws://"+window.location.host+"/ws/stateupdates");
+  wsc.register_connect_callback(status_connect);
+  wsc.register_disconnect_callback(status_disconnect);
+  </script>
+
+<script>
+
+  function updateDesc(desc) {
+      
+    var descField = document.getElementById("scrapDesc");
+    descField.value = desc;
+    document.getElementById("scrapDescInput").value=desc;
+  }
+
+</script>
+
+
+  
+  
+
+<div class="modal-backdrop fade show"></div></body></html>

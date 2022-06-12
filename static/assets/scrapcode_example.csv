@@ -1,0 +1,11 @@
+id,name
+SC-001,Drawing Error
+SC-002,Operator Error
+SC-003,Material Defects
+SC-004,Training Error
+SC-005,Insufficient Material
+SC-006,Sub-Con Error
+SC-007,Used for Setter
+SC-008,Machine Error
+SC-009,Customer has Paid
+SC-010,Supplier has Paid

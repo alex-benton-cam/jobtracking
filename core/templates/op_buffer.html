@@ -1,0 +1,128 @@
+{% extends "_index.html" %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="">
+      <div class="row mb-3 gy-3 d-flex align-items-center">
+        <div class="col-12 col-lg-7">
+          <h3>Location Dashboard - {{ locName }}</h3>
+        </div>
+        <div class = "col-12 col-lg-5 d-flex align-items-center justify-content-end">
+          <button onclick="wsm.send('call_manager_button','{{ loc_id }}')"
+                  name="call_manager_button"
+                  class="btn btn-danger mx-3">
+            Call Manager
+          </button>
+          <button class="btn btn-outline-primary disabled"
+                  type="button"
+                  id="toggle_button"
+                  value="{{ last_action }}"
+                  onclick="toggle_check()">
+            Toggle Check In/Out
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="container-fluid px-0">
+          <form method="post" class="row">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <div class="input-group">
+              {% if last_action == "in" %}
+                <button type="submit"
+                        id="submit_button"
+                        name="add_to_buffer_button"
+                        value="in"
+                        class="btn btn-success col-2">
+                  Check Job In
+                </button>
+              {% else %}
+                <button type="submit"
+                        id="submit_button"
+                        name="add_to_buffer_button"
+                        value="out"
+                        class="btn btn-info col-2">
+                  Check Job Out
+                </button>
+              {% endif %}
+              <input id="work_order_field"
+                     name="operation_id"
+                     placeholder="Op ID or Work Number"
+                     type="text"
+                     autocomplete="off"
+                     value=""
+                     class="form-control font-weight-bold bg-light col-10"
+                     autofocus>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3 gy-3">
+      <div class="col-xl-6 col-12 d-flex align-items-stretch">
+        <div class="card col-12">
+          {% if actData %}
+            {% set pendOpt = "none" %}
+            <div class="card-header">Active Jobs</div>
+            <div class="card-body">{{ datatable(actFieldDict, actData, tableid="actTable", option="select")}}</div>
+          {% else %}
+            {% set pendOpt = "select" %}
+            <div class="card-header">Active Jobs</div>
+            <div class="card-body">No jobs active at {{ locName }}</div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-xl-6 col-12 d-flex align-items-stretch">
+        <div class="card col-12">
+          <div class="card-header">Pending Jobs</div>
+          <div class="card-body">{{ datatable(pendFieldDict, pendData, option="select", tableid="pendTable")}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-12">
+        {% if compData %}
+          <div class="card">
+            <div class="card-header">Completed Jobs</div>
+            <div class="card-body">{{ datatable(compFieldDict, compData, tableid="compTable")}}</div>
+          </div>
+        {% else %}
+          <div class="card">
+            <div class="card-header">Completed Jobs</div>
+            <div class="card-body">No jobs completed at {{ locName }}</div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  <script>
+    function toggle_check(){
+      var button = document.getElementById("toggle_button");
+      var submit = document.getElementById("submit_button");
+
+      if (button.value == "in"){
+
+        button.value = "out";
+
+        submit.setAttribute("class", "btn btn-success col-2");
+        submit.value = "in";
+        submit.innerHTML = "Check Job In";
+
+      } else {
+
+        button.value = "in";
+
+        submit.setAttribute("class", "btn btn-info col-2");
+        submit.value = "out";
+        submit.innerHTML = "Check Job Out";
+      }
+    }
+    $('document').ready(function(){
+      var button = document.getElementById("toggle_button");
+      $("#toggle_button").removeClass("disabled");
+    });
+  </script>
+{% endblock %}

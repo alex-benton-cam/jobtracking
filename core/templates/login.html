@@ -1,0 +1,40 @@
+{% extends "_index.html" %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="row my-5 d-flex justify-content-center">
+      <div class="col-md-6 col-lg-6">
+        <div class="card">
+          <div class="card-header">Login</div>
+          <form method="post" action="/login/">
+            <div class="card-body">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <div class="form-group mb-3">
+                <div class="form-label-group">{{ form.username }}</div>
+              </div>
+              <div class="form-group mb-3">
+                <div class="form-label-group">{{ form.password }}</div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-primary btn-block" type="submit">Login</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  {{ super()}}
+  <script>
+    document.getElementById("id_username").classList.add("form-control");
+    document.getElementById("id_password").classList.add("form-control");
+    document.getElementById("id_username").placeholder = "Username";
+    document.getElementById("id_password").placeholder = "Password";
+    document.getElementById("id_username").type = "text";
+    document.getElementById("id_password").type = "password";
+    document.getElementById("id_username").required = "required";
+    document.getElementById("id_password").required = "required";
+    document.getElementById("id_username").autofocus = "autofocus";
+  </script>
+{% endblock %}

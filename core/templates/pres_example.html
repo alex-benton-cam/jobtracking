@@ -1,0 +1,16 @@
+{% extends "_index.html" %}
+{% block content %}
+  {% set cardStyle = "col-12 mb-3" %}
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <h4>{{page_title}}</h4>
+    </div>
+    <div class="row">
+      <div class="{{ cardStyle }}">
+        <div class="card">
+          <div class="card-body">{{ datatable(fieldDict, queryData, "modelTable") }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

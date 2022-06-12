@@ -1,0 +1,352 @@
+{% extends "_macros.html" %}
+{% block title %}Shoestring{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{{ STATIC }}css/dashboard.css">
+  <link rel="stylesheet" href="{{ STATIC }}datatables/datatables.min.css">
+{% endblock %}
+{% block macros %}{{ super() }}{% endblock %}
+{% block body %}
+  <!-- Navbar (Top of page) -->
+  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" {{'href=/admin' if user is defined else 'href=/'}}>Shoestring Job Tracking</a>
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">
+        <div class="nav-link mx-3">
+          <span id="live_clock" class="px-4">{{ time|unix }}</span>
+          {% if user is defined %}
+            <a href="/signout" class="text-light pr-3"><i class="bi-person px-2"></i>Sign Out</a>
+          {% endif %}
+          <button class="navbar-toggler d-md-none"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#sidebarMenu"
+                  aria-controls="sidebarMenu"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Sidebar -->
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu"
+           class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <ul class="nav flex-column mt-3 mb-auto">
+          {% if user is defined %}
+            {{ nav_item("Upload Ops", "/upload", "bi-file-arrow-up")}}
+            {{ nav_item("Setup Data", "/mgsetup", "bi-cloud")}}
+            <hr>
+            {{ nav_item("All Jobs", "/jobs", "bi-briefcase")}}
+            {{ nav_item("All Operations", "/operations", "bi-clipboard-check")}}
+            {{ nav_item("All Locations", "/locations", "bi-pin-angle")}}
+            {{ nav_item("All Operators", "/workers", "bi-person-badge")}}
+            <hr>
+          {% endif %}
+          {{ nav_item("Factory Floor", "/factory", "bi-building")}}
+          {{ nav_item("Machine Dash", "/machine", "bi-motherboard")}}
+          {{ nav_item("Operation", "/operation", "bi-card-checklist")}}
+          <ul class="nav flex-column mt-auto position-absolute bottom-0">
+            <!--{% if request.session.current_operation is defined %}
+              <li class="nav-item active">
+                <a class="nav-link" href="/operation/">
+                  <i class="bi-card-text"></i>
+                  <span id="machine_footer_name">&nbsp{{ request.session.current_operation }}</span>
+                </a>
+              </li>
+            {% endif %}-->
+            {% if help is not none %}
+              <div class="btn-group dropend">
+                <button class="btn btn-light dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="bi-exclamation text-danger"></i>
+                  <span class="text-danger">&nbspHelp Needed</span>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  {% for item in help %}
+                    <div class="dropdown-item">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ item }}</span>
+                        <button type="button"
+                                class="btn-close"
+                                onclick="wsm.send('cancel_call_manager','{{ item }}')"></button>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+            {% if user is defined %}
+              <li class="nav-item active">
+                <div class="nav-link">
+                  <i class="bi-person">
+                    </i><span>&nbsp{{ user }}</span>
+                  </div>
+                </li>
+              {% else %}
+                {{ nav_item("Log In", "/login", "bi-person")}}
+              {% endif %}
+              {% if request.session.location_id is defined %}
+                {% if request.session.location_id is not none %}
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/machine/">
+                      <i class="bi-pin-angle"></i>
+                      <span id="machine_footer_name">&nbsp{{ request.session.location_id }}</span>
+                    </a>
+                  </li>
+                {% endif %}
+              {% endif %}
+              <li class="nav-item active">
+                <a id="live_status" class="nav-link" href="#">
+                  <i class="bi-wifi-1 text-warning"></i>
+                  <span class="text-warning">&nbspConnecting</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 pt-3">
+          {% for m in get_messages(request) %}
+            {% if "modal_confirm" in m.tags.split(' ') %}
+              {% set msg = m.message|from_json %}
+              <div class="modal fade"
+                   id="modal_confirm"
+                   aria-labelledby="modalLabel2"
+                   aria-hidden="false">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="modalLabel2">{{ msg.title }}</h5>
+                      <button type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      {% if msg.message is not none %}{{ msg.message }}{% endif %}
+                      {% if msg.table is not none %}
+                        <table class="table table-striped my-3">
+                          {% for row in msg.table %}
+                            <tr>
+                              {% for val in row %}<td>{{ val }}</td>{% endfor %}
+                            </tr>
+                          {% endfor %}
+                        </table>
+                      {% endif %}
+                      {% if msg.message_bottom is not none %}
+                        <br>
+                        <hr>
+                        {{ msg.message_bottom }}
+                      {% endif %}
+                    </div>
+                    {% if msg.do_ws is defined %}
+                      <div class="modal-footer">
+                        <button onclick="wsm.send('cancel_call_manager','{{ loc_id }}')"
+                                class="btn btn-primary px-5 btn-lg">
+                          Cancel Help Request
+                        </button>
+                        <button onclick="wsm.send('call_manager_button','{{ loc_id }}')"
+                                class="btn btn-danger px-3 btn-lg">
+                          Call Manager
+                        </button>
+                      </div>
+                    {% else %}
+                      <form method="post" class="modal-footer">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                        {% if msg.action2 is defined %}
+                          <button type="submit"
+                                  name="{{ msg.name }}"
+                                  value="{{ msg.action2 }}"
+                                  class="btn btn-danger mx-4">
+                            {{ msg.action2 }}
+                          </button>
+                        {% else %}
+                          <button type="button"
+                                  class="btn btn-danger"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close">Cancel</button>
+                        {% endif %}
+                        <button type="submit"
+                                name="{{ msg.name }}"
+                                value="{{ msg.action }}"
+                                class="btn btn-primary">{{ msg.action }}</button>
+                        {% set data = msg.data|from_json %}
+                        {% for k, v in data.items() %}
+                          <input type="hidden" name="{{ k }}" value="{{ v }}">
+                        {% endfor %}
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+          {% if manager_locations is defined %}
+            <div class="modal fade"
+                 id="call_manager_modal"
+                 aria-labelledby="modalLabel2"
+                 aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="card-header">Help Needed</div>
+                  <div class="card-body">
+                    Help has been called at <span id="call_manager_location"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          {% block modals %}{% endblock %}
+          {% set msgSettings = {"debug": ("alert-light", "bi-code"),
+          "info": ("alert-info", "bi-info-circle"),
+          "success": ("alert-success", "bi-check-circle"),
+          "warning": ("alert-warning", "bi-exclamation-triangle"),
+          "error": ("alert-danger", "bi-exclamation-octagon-fill")}%}
+          {% for msg in get_messages(request) %}
+            {% set tags = msg.tags.split(' ') %}
+            {% if 'modal_confirm' not in msg.tags.split(' ') %}
+              <div class="row">
+                <div class="col-12">
+                  <div class="container-fluid px-2">
+                    <div class="alert {{ msgSettings[msg.tags][0] }} alert-dismissible fade show"
+                         role="alert">
+                      <i class="{{ msgSettings[msg.tags][1] }}"></i>
+                      <span>&nbsp{{ msg }}</span>
+                      <button type="button"
+                              class="btn-close"
+                              data-bs-dismiss="alert"
+                              aria-label="Close"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+            {% if landing is defined %}
+            <h4 class="m-4">Welcome to Shoestring Job Tracking!</h4>
+            {% endif %}
+          {% block content %}{% endblock %}
+        </main>
+      </div>
+    </div>
+    <footer class="mt-auto">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3 col-lg-2 d-md-block"></div>
+          <div class="col-md-9 col-lg-10 text-center">
+            <a class="text-decoration-none link-secondary"
+               href="https://www.digitalshoestring.net/">
+              <h6>Copyright &copy; Shoestring 2022</h6>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  {% endblock %}
+  {% block scripts %}
+    <script src="{{STATIC}}js/dashboard.js"></script>
+    <script>
+    var myModal = new bootstrap.Modal(document.getElementById("modal_confirm"), {});
+    document.onreadystatechange = function () {
+      myModal.show();
+    };
+    </script>
+    <script>
+  function getCookie(cookieName) {
+    let cookie = {};
+    document.cookie.split(';').forEach(function(el) {
+      let [key,value] = el.split('=');
+      cookie[key.trim()] = value;
+    })
+    return cookie[cookieName];
+  }
+  function status_connect(){
+    var status = document.getElementById("live_status");
+    status.innerHTML = '<i class="bi-wifi text-success"></i>&nbsp<span class="text-success">Connected</span>';
+  }
+  
+  function status_disconnect(){
+    var status = document.getElementById("live_status");
+    status.innerHTML = '<i class="bi-wifi-off text-danger"></i>&nbsp<span class="text-danger">Disconnected</span>';
+  }
+
+  {% if manager_locations is defined %}
+  function call_manager(location){
+    if ({{manager_locations|safe}}.includes(location)){
+        var call_manager_location_field = document.getElementById("call_manager_location");
+        call_manager_location_field.innerHTML = location;
+        var myModal = new bootstrap.Modal(document.getElementById('call_manager_modal'))
+        myModal.show()
+      }
+    }
+  {% else %}
+    function call_manager(location){
+      //pass
+    } 
+  {% endif %}
+
+    //function send_call(content, tag) {
+    //  wsm.send(content, tag)
+    //  var new myModal = bootstrap.Modal(document.getElementById('confirm_modal'))
+    //  myModal.hide()
+
+    //}
+
+
+    // Unix time value from server: seconds since 1970-01-01T00:00:00Z
+    // Below is a number for 2014-07-02T06:48:24.000Z, set to actual server value
+    var serverTime = {{time|unix}};
+
+    var doClock = (function () {
+
+      // Calc offset from server time
+      // Javascript time value is milliseconds since above epoch
+      var serverOffset = serverTime - (new Date() / 1000 | 0);
+
+      // Helper
+      function z(n){return (n<10?'0':'') + n}
+
+      return function() {
+
+        // Create a new Date object each time so
+        // it doesn't matter if a second or more is skipped
+        var now = new Date();
+
+        // Adjust for server offset
+        now.setSeconds(now.getSeconds() + serverOffset);
+
+        // write clock to document, values are local, not UTC
+        document.getElementById('live_clock').innerHTML = now.getFullYear()   + '-' +
+                                                    z(now.getMonth()+1) + '-' +
+                                                    z(now.getDate())    + ' ' +
+                                                    z(now.getHours())   + ':' +
+                                                    z(now.getMinutes()) + ':' +
+                                                    z(now.getSeconds());
+        // Run again just after next full second
+        setTimeout(doClock, 1020 - now.getMilliseconds());
+      };    
+    }());
+
+
+  window.onload = doClock;
+
+
+  //var wsc = new wsClient();
+  //wsc.connect("ws://"+window.location.host+"/ws/stateupdates");
+  //wsc.register_connect_callback(status_connect);
+  //wsc.register_disconnect_callback(status_disconnect);
+
+  //Can be moved to place where needed
+  var wsm = new wsClient();
+  wsm.connect("ws://"+window.location.host+"/ws/manager");
+  wsm.register_callback("call_manager_button", (message) => call_manager(message));
+  wsm.register_connect_callback(status_connect);
+  wsm.register_disconnect_callback(status_disconnect);
+    </script>
+  {% endblock %}

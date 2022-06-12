@@ -1,0 +1,123 @@
+{% extends "_base.html" %}
+{% macro nav_item(friendly, link="/#", icon="bi-app") %}
+  <li class="nav-item active">
+    <a class="nav-link" href="{{ link }}">
+      <i class="{{ icon }}"></i>
+      <span>&nbsp{{ friendly }}</span>
+    </a>
+  </li>
+{% endmacro %}
+{% macro formatEntry(rowData, field, attrs) %}
+  {% if rowData[field] is none %}
+    -
+  {% elif attrs.href is defined %}
+    <a href={{ rowData[attrs.href] }}>{{ rowData[field] }}</a>
+  {% elif attrs.suffix is defined %}
+  {{rowData[field]}} {{attrs.suffix}}
+  {% else %}
+    {{ rowData[field] }}
+  {% endif %}
+{% endmacro %}
+{% macro singletable(fieldDict2, dataRow2) %}
+  <table class="table table-striped">
+    {% for field_id, field_attrs in fieldDict2.items() %}
+      <tr>
+        <td>{{ field_attrs.verbose }}</td>
+        <td>{{ formatEntry(dataRow2, field_id, field_attrs) }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endmacro %}
+
+{% macro table_scripts(tabID, opt) %}
+  {% if opt=="none" %}
+    <script>
+      $(document).ready(function () {
+        var table = $('#{{tabID}}').DataTable({
+          scrollX: true,
+        });
+      });
+
+    </script>
+  {% elif opt=="select" %}
+    <script>
+      $(document).ready(function () {
+        var table = $('#{{tabID}}').DataTable({
+          scrollX: true,
+        });
+
+        table.column(0).visible(false);
+
+        $('#{{tabID}} tbody').on('click', 'tr', function () {
+          if ($(this).hasClass('table-primary')) {
+            $(this).removeClass('table-primary')
+
+            document.getElementById("work_order_field").value = "";
+          } else {
+            table.$('tr.table-primary').removeClass('table-primary');
+            $(this).addClass('table-primary');
+
+            rowData = table.row(this).data()[0];
+            document.getElementById("work_order_field").value = rowData;
+          }
+
+        });
+      });
+    </script>
+  {% elif opt=="minimal" %}
+    <script>
+    $(document).ready(function () {
+      var table = $('#{{tabID}}').DataTable({
+        scrollX: true,
+        "bFilter": false,
+        "bPaginate": false,
+      });
+    });
+
+    </script>
+  {% endif %}
+{% endmacro %}
+{% macro datatable(fieldDict, data, tableid="table01", option="none") %}
+  <table id="{{ tableid }}"
+         class="table table-striped nowrap table-hover"
+         style="width:100%">
+    <thead>
+      <tr>
+        {% for value in fieldDict.values() %}
+          <th>{{ value["verbose"] }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for datumDict in data %}
+        <tr>
+          {% for field_id, field_attrs in fieldDict.items() %}
+            <td>{{ formatEntry(datumDict, field_id, field_attrs)}}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+    {% if data|length > 10 %}
+      <tfoot>
+        <tr>
+          {% for value in fieldDict.values() %}
+            <th>{{ value["verbose"] }}</th>
+          {% endfor %}
+        </tr>
+      </tfoot>
+    {% endif %}
+  </table>
+  <script type="text/javascript" src="{{STATIC}}datatables/datatables.min.js"></script>
+    {{ table_scripts(tableid, option) }}
+{% endmacro %}
+
+{% macro add_joblog(joblog) %}
+  <table class="table table-sm table-hover">
+    {% for row in jobLog %}
+
+      <tr class="{{"table-secondary" if row[-1] else ""}}">
+        {% for field in row[:-1] %}<td>{{ field }}</td>{% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+{% endmacro %}

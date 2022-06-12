@@ -1,0 +1,19 @@
+<!-- Add content on top of the _index.html file -->
+{% extends "_index.html" %}
+
+<!-- Fill the 'content' section of _index.html -->
+{% block content %}
+
+    <!-- Retrieve a context variable -->
+    <h2>{{page_title}}</h2>
+    
+    <!-- Create a simple form to generate a POST request -->
+    <form method="POST" enctype="multipart/form-data">
+        
+        <!-- This line is required in every form -->
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        
+        <!-- The form's only element  -->
+        <button name="confirm_button">Confirm</button>
+    </form>
+{% endblock %}

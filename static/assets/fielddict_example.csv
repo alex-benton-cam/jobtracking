@@ -1,0 +1,114 @@
+id,data,name,model
+upload_ops_complete_jobs,"{ 
+        ""work_no"": {""href"": ""abs_link""}, 
+        ""status"": {}, 
+        ""company"": {}, 
+        ""job_name"": {}, 
+        ""quantity"": {}, 
+        ""operation_id__op_id"": {""verbose"": ""Current Op"", ""href"": ""operation_id__abs_link""}, 
+        ""operation_id__status"": {""verbose"": ""Op Status""}, 
+        ""operation_id__location_id__name"": {""verbose"": ""Current Location"", ""href"": ""operation_id__location_id__abs_link""}, 
+    }",Upload Ops Complete Jobs,Job
+all_operations_table,"{
+        ""job"": {""href"": ""job_id__abs_link""},
+        ""op_no"": {""href"": ""abs_link""},
+        ""name"": {},
+        ""location_id__name"": {""verbose"": ""Location"", ""href"": ""location_id__abs_link""},
+        ""worker"": {""verbose"": ""Operator"", ""href"": ""worker_id__abs_link""},
+        ""job_id__quantity"": {},
+    }",All Operations Table,Operation
+all_jobs_table,"{
+        ""work_no"": {""href"": ""abs_link""},
+        ""status"": {""verbose"": ""Job Status""},
+        ""company"": {},
+        ""job_name"": {""verbose"": ""Title""},
+        ""quantity"": {},
+        ""operation_id__op_id"": {""verbose"": ""Current Op"", ""href"": ""operation_id__abs_link""},
+        ""operation_id__status"": {""verbose"": ""Op Status""},
+        ""operation_id__location_id__name"": {""verbose"": ""Current Location"", ""href"": ""operation_id__location_id__abs_link""},
+    }",All Jobs Table,Job
+all_workers_table,"{
+        ""name"": {""href"": ""abs_link""},
+    }",All Workers Table,Worker
+all_locations_table,"{
+        ""loc_id"": {""href"": ""abs_link""},
+        ""name"": {},
+        ""many_jobs"": {},
+    }",All Locations Table,Location
+job_detail_main,"{
+        ""work_no"": {""href"": ""abs_link""},
+        ""status"": {""verbose"": ""Job Status""},
+        ""operation_id__op_id"": {""verbose"": ""Current Operation"", ""href"": ""operation_id__abs_link""},
+        ""operation_id__status"": {""verbose"": ""Operation Status""},
+        ""location_id__name"": {""verbose"": ""Current Location"", ""href"": ""location_id__abs_link""},
+        ""job_name"": {},
+        ""company"": {},
+        ""quantity"": {},
+    }",Job Detail Main,Job
+job_detail_ops,"{
+        ""op_id"": {""href"": ""abs_link""},
+        ""op_no"": {},
+        ""status"": {},
+        ""phase"": {},
+        ""location_id__name"": {""verbose"": ""Location"", ""href"": ""location_id__abs_link""},
+        ""name"": {},
+        ""worker"": {""href"": ""worker_id__abs_link"", ""verbose"": ""Operator""},""start_time"":{},
+    }",Job Detail Ops,Operation
+location_detail_main,"{
+        ""job"": {""href"": ""job_id__abs_link""},
+        ""op_no"": {""href"": ""abs_link""},
+        ""status"": {""verbose"": ""Op Status""},
+        ""name"": {},
+        ""location_id__name"": {""verbose"": ""Location"", ""href"": ""location_id__abs_link""},
+        ""worker"": {""href"": ""worker_id__abs_link""},
+        ""job_id__quantity"": {},
+    }",Location Detail Main,Location
+worker_detail_main,"{
+        ""job"": {""href"": ""job_id__abs_link""},
+        ""op_no"": {""href"": ""abs_link""},
+        ""status"": {""verbose"": ""Op Status""},
+        ""name"": {},
+        ""location_id__name"": {""verbose"": ""Location"", ""href"": ""location_id__abs_link""},
+        ""job_id__quantity"": {},
+    }",Worker Detail Main,Worker
+op_dash_tab_1,"{
+        # ""op_id"": {""verbose"": ""Operation"", ""href"": ""abs_link""},
+        ""job_id__work_no"": {""verbose"": ""Job"", ""href"": ""job_id__abs_link""},
+        ""job_id__job_name"": {},
+        ""job_id__company"": {},
+        ""worker_id__name"": {""verbose"": ""Operator"", ""href"": ""worker_id__abs_link""},
+        ""status"": {},
+        ""phase"": {},
+        ""part_no"": {},
+        ""job_id__quantity"": {},
+        ""drg_no"": {},
+        ""location_id__name"": {""verbose"": ""Location"", ""href"": ""location_id__abs_link""},
+        ""num_scrap"": {}
+    }",Op Dash Tab 1,Operation
+op_dash_tab_2,"{
+        ""start_time"": {},
+        ""end_time"": {},
+        ""planned_set"": {""suffix"": ""mins""},
+        ""planned_run"": {""suffix"": ""mins""},
+        ""actual_start_time"": {""verbose"": ""Actual Start Time""},
+        ""actual_end_time"": {""verbose"": ""Actual End Time""},
+    }",Op Dash Tab 2,Operation
+op_dash_tab_2_extra,"{
+        ""actual_set"": {""suffix"": ""mins""},
+        ""actual_run"": {""suffix"": ""mins""},
+        ""actual_oneoff"": {""suffix"": ""mins""},
+        ""actual_insp"": {""suffix"": ""mins""},
+        ""actual_fullbatch"": {""suffix"": ""mins""},
+        ""last_action_time"": {}
+    }",Op Dash Tab 2 Extra,Operation
+machine_dash,"{
+        ""op_id"": {},
+        ""job"": {""href"": ""job_id__abs_link""},
+        ""op_no"": {""href"": ""abs_link""},
+        ""status"": {},
+        ""name"": {},
+        ""job_id__location_id__name"": {""verbose"": ""Current Location"", ""href"": ""location_id__abs_link""},
+        ""worker"": {""href"": ""worker_id__abs_link""},
+        ""job_id__quantity"": {},
+        ""start_time"": {},
+    }",Machine Dash,Operation

@@ -1,0 +1,44 @@
+{% extends "_index.html" %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="container-fluid px-0">
+          <form method="post" class="row">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <div class="input-group">
+              <button type="submit" name="select_machine_button" class="btn btn-primary">Select Machine</button>
+              <input id="machine_id_field"
+                     name="machine_id"
+                     placeholder="Machine ID"
+                     type="text"
+                     autocomplete="off"
+                     value=""
+                     class="form-control font-weight-bold"
+                     autofocus>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row gy-3 mb-3">
+      {% for locDict in data %}
+        {% set locid = locDict["loc_id"] %}
+        <div class="col-lg-2 col-md-3 col-4">
+          <div class="card"
+               style="height: 100%"
+               id="{{ locid }}"
+               onclick="selectMachine2('{{ locid }}')">
+            <div class="card-header">{{ locid }}</div>
+            <div class="card-body">{{ locDict["name"] }}</div>
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  <script src="{{STATIC}}js/factory.js"></script>
+{% endblock %}
