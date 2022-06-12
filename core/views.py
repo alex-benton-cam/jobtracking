@@ -1472,7 +1472,7 @@ class Login(View):
         if user is not None:
             login(request, user)
             messages.success(request, "Successful Login")
-            return redirect("jobs")
+            return redirect("index")
         else:
             messages.warning(request, "Failed to Login")
             return redirect("index")
